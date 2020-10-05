@@ -1,4 +1,5 @@
-import lombok.AllArgsConstructor;
+package model;
+
 import lombok.Getter;
 import lombok.Setter;
 

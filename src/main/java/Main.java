@@ -1,4 +1,7 @@
+import model.QuestionWithEmbodiments;
+import model.Quiz;
 import reader.ReaderFromCsv;
+import writer.WriterToTxt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,15 +14,24 @@ import java.util.List;
 //      в 3 вопросах, по 4 варианта ответа сейчас 24 сгенированных тестов, а должно быть 24^3=13824
 // -научиться записывать сгенерированные тесты в файл и читать из него
 // -научиться шифровать этот файл
-// -экспорт в word
+// -экспорт в .txt
+// -экспорт в word https://www.baeldung.com/java-microsoft-word-with-apache-poi
 // -графический интерфейс
 // -предусмотреть возможность добавления другого типа вопроса в тест, например, с развернутым ответом
+// -добавить отлов exception-ов
+// -добавить логгирование
 
 public class Main {
 
     public static void main(String[] args) {
         Quiz originalQuiz = getOriginalQuizFromResourceFile();
-        QuizCombinatorialUtil.generate(originalQuiz);
+        List<Quiz> generatedQuizList = QuizCombinatorialUtil.generate(originalQuiz);
+        writeToFile(generatedQuizList, "1.txt");
+    }
+
+    private static void writeToFile(List<Quiz> generatedQuizList, String filename) {
+        WriterToTxt writer = new WriterToTxt(filename);
+        writer.write(generatedQuizList);
     }
 
     private static Quiz getOriginalQuizFromResourceFile() {

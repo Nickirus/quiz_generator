@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReaderFromCsv {
-    private String fileName;
+    private final String fileName;
 
     public ReaderFromCsv(final String fileName) {
         this.fileName = fileName;
@@ -20,6 +20,7 @@ public class ReaderFromCsv {
     public List<String[]> getLineList() {
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         InputStream inputStream = classloader.getResourceAsStream(fileName);
+        assert inputStream != null;
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         CSVReader csvReader = new CSVReader(reader, ',', '"', 1);
         List<String[]> lineList = null;
