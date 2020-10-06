@@ -1,3 +1,5 @@
+package utils;
+
 import lombok.experimental.UtilityClass;
 import model.QuestionWithEmbodiments;
 import model.Quiz;
