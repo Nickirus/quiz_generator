@@ -12,8 +12,24 @@ import java.util.stream.Collectors;
 
 @UtilityClass
 public class QuizCombinatorialUtil {
-
     public List<Quiz> generate(Quiz quiz) {
+        return questionCombine(answerCombine(quiz));
+    }
+
+    private static List<Quiz> questionCombine(List<Quiz> inputQuizList) {
+        final List<Quiz> combinedQuizList = new ArrayList<>();
+        for (Quiz quiz : inputQuizList) {
+            List<List<QuestionWithEmbodiments>> questionsLists = generateQuestionList(quiz.getQuestions());
+            for (List<QuestionWithEmbodiments> questions : questionsLists) {
+                Quiz newQuiz = new Quiz();
+                newQuiz.setQuestions(questions);
+                combinedQuizList.add(newQuiz);
+            }
+        }
+        return combinedQuizList;
+    }
+
+    private List<Quiz> answerCombine(Quiz quiz) {
         final List<Quiz> combinedQuizList = new ArrayList<>();
         boolean flag = true;
         for (QuestionWithEmbodiments question : quiz.getQuestions()) {
@@ -29,8 +45,9 @@ public class QuizCombinatorialUtil {
                 }
                 if (flag) {
                     Quiz newQuiz = new Quiz();
-
-                    newQuiz.addNewQuestion(new QuestionWithEmbodiments(questionText, answerList, numberOfTrueAnswer));
+                    newQuiz.addNewQuestion(new QuestionWithEmbodiments(questionText,
+                            answerList,
+                            numberOfTrueAnswer));
                     combinedQuizList.add(newQuiz);
                 }
             }
@@ -42,11 +59,27 @@ public class QuizCombinatorialUtil {
                             numberOfTrueAnswer = j + 1;
                         }
                     }
-                    combinedQuizList.get(i).addNewQuestion(new QuestionWithEmbodiments(questionText, answersList.get(i), numberOfTrueAnswer));
+                    combinedQuizList.get(i)
+                            .addNewQuestion(new QuestionWithEmbodiments(questionText,
+                            answersList.get(i),
+                            numberOfTrueAnswer));
                 }
             flag = false;
         }
         return combinedQuizList;
+    }
+
+    private List<List<QuestionWithEmbodiments>> generateQuestionList(List<QuestionWithEmbodiments> inputQuestion) {
+        List<List<Integer>> indexLists = getIndexCombinations(inputQuestion.size());
+        List<List<QuestionWithEmbodiments>> answersList = new ArrayList<>();
+        for (List<Integer> indexes : indexLists) {
+            List<QuestionWithEmbodiments> answerList = new ArrayList<>();
+            for (Integer i : indexes) {
+                answerList.add(inputQuestion.get(i - 1));
+            }
+            answersList.add(answerList);
+        }
+        return answersList;
     }
 
     private List<List<String>> generateAnswerList(List<String> inputAnswer) {

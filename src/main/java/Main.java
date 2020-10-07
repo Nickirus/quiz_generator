@@ -10,9 +10,10 @@ import java.util.List;
 
 //todo
 // -предусмотреть случай, когда количество ответов в вопросах разное
-// -увеличить количество вариантов, переставляя вопросы местами
-//      например, в 2 вопросах, по 3 варианта ответа сейчас 6 сгенированных тестов, а должно быть 6^2=36
-//      в 3 вопросах, по 4 варианта ответа сейчас 24 сгенированных тестов, а должно быть 24^3=13824
+// -генерировать только определенное количество вариантов, исходя из потребностей пользователя,
+//      т.к. при большом количестве вопросов геометрически возрастает количество вариантов
+// -при экспорте нужна возможность буквенной нумерации ответов.
+//      Не забыть про то, что ответы тогда тоже должны быть в буквенном выражении
 // -научиться записывать сгенерированные тесты в файл и читать из него
 // -научиться шифровать этот файл
 // -экспорт в .txt
@@ -27,12 +28,13 @@ public class Main {
     public static void main(String[] args) {
         Quiz originalQuiz = getOriginalQuizFromResourceFile();
         List<Quiz> generatedQuizList = QuizCombinatorialUtil.generate(originalQuiz);
-        writeToFile(generatedQuizList, "1.txt");
+        writeQuizTextToFiles(generatedQuizList);
     }
 
-    private static void writeToFile(List<Quiz> generatedQuizList, String filename) {
-        WriterToTxt writer = new WriterToTxt(filename);
-        writer.write(generatedQuizList);
+    private static void writeQuizTextToFiles(List<Quiz> generatedQuizList) {
+        WriterToTxt writer = new WriterToTxt();
+        writer.writeQuizText(generatedQuizList, "1.txt");
+        writer.writeQuizAnswersToText(generatedQuizList, "1_answers.txt");
     }
 
     private static Quiz getOriginalQuizFromResourceFile() {
