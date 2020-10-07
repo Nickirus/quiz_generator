@@ -13,17 +13,25 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class QuizCombinatorialUtil {
     public List<Quiz> generate(Quiz quiz) {
-        return questionCombine(answerCombine(quiz));
+        return questionCombine(answerCombine(quiz), 0);
     }
 
-    private static List<Quiz> questionCombine(List<Quiz> inputQuizList) {
+    public List<Quiz> generate(Quiz quiz, int limit) {
+        return questionCombine(answerCombine(quiz), limit);
+    }
+
+    private static List<Quiz> questionCombine(List<Quiz> inputQuizList, int limit) {
         final List<Quiz> combinedQuizList = new ArrayList<>();
         for (Quiz quiz : inputQuizList) {
             List<List<QuestionWithEmbodiments>> questionsLists = generateQuestionList(quiz.getQuestions());
             for (List<QuestionWithEmbodiments> questions : questionsLists) {
                 Quiz newQuiz = new Quiz();
                 newQuiz.setQuestions(questions);
-                combinedQuizList.add(newQuiz);
+                if (limit != 0 && combinedQuizList.size() == limit) {
+                    return combinedQuizList;
+                } else {
+                    combinedQuizList.add(newQuiz);
+                }
             }
         }
         return combinedQuizList;
@@ -61,8 +69,8 @@ public class QuizCombinatorialUtil {
                     }
                     combinedQuizList.get(i)
                             .addNewQuestion(new QuestionWithEmbodiments(questionText,
-                            answersList.get(i),
-                            numberOfTrueAnswer));
+                                    answersList.get(i),
+                                    numberOfTrueAnswer));
                 }
             flag = false;
         }

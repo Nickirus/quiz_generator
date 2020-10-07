@@ -10,8 +10,6 @@ import java.util.List;
 
 //todo
 // -предусмотреть случай, когда количество ответов в вопросах разное
-// -генерировать только определенное количество вариантов, исходя из потребностей пользователя,
-//      т.к. при большом количестве вопросов геометрически возрастает количество вариантов
 // -при экспорте нужна возможность буквенной нумерации ответов.
 //      Не забыть про то, что ответы тогда тоже должны быть в буквенном выражении
 // -научиться записывать сгенерированные тесты в файл и читать из него
@@ -27,7 +25,7 @@ public class Main {
 
     public static void main(String[] args) {
         Quiz originalQuiz = getOriginalQuizFromResourceFile();
-        List<Quiz> generatedQuizList = QuizCombinatorialUtil.generate(originalQuiz);
+        List<Quiz> generatedQuizList = QuizCombinatorialUtil.generate(originalQuiz, 50);
         writeQuizTextToFiles(generatedQuizList);
     }
 
