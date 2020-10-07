@@ -13,21 +13,21 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class QuizCombinatorialUtil {
     public List<Quiz> generate(Quiz quiz) {
-        return questionCombine(answerCombine(quiz), 0);
+        return questionCombine(answerCombine(quiz), 0, 0);
     }
 
-    public List<Quiz> generate(Quiz quiz, int limit) {
-        return questionCombine(answerCombine(quiz), limit);
+    public List<Quiz> generate(Quiz quiz, int variantLimit, int questionLimit) {
+        return questionCombine(answerCombine(quiz), variantLimit, questionLimit);
     }
 
-    private static List<Quiz> questionCombine(List<Quiz> inputQuizList, int limit) {
+    private static List<Quiz> questionCombine(List<Quiz> inputQuizList, int variantLimit, int questionLimit) {
         final List<Quiz> combinedQuizList = new ArrayList<>();
         for (Quiz quiz : inputQuizList) {
-            List<List<QuestionWithEmbodiments>> questionsLists = generateQuestionList(quiz.getQuestions());
+            List<List<QuestionWithEmbodiments>> questionsLists = generateQuestionList(quiz.getQuestions(), questionLimit);
             for (List<QuestionWithEmbodiments> questions : questionsLists) {
                 Quiz newQuiz = new Quiz();
                 newQuiz.setQuestions(questions);
-                if (limit != 0 && combinedQuizList.size() == limit) {
+                if (variantLimit != 0 && combinedQuizList.size() == variantLimit) {
                     return combinedQuizList;
                 } else {
                     combinedQuizList.add(newQuiz);
@@ -77,17 +77,21 @@ public class QuizCombinatorialUtil {
         return combinedQuizList;
     }
 
-    private List<List<QuestionWithEmbodiments>> generateQuestionList(List<QuestionWithEmbodiments> inputQuestion) {
+    private List<List<QuestionWithEmbodiments>> generateQuestionList(List<QuestionWithEmbodiments> inputQuestion,
+                                                                     int questionLimit) {
         List<List<Integer>> indexLists = getIndexCombinations(inputQuestion.size());
-        List<List<QuestionWithEmbodiments>> answersList = new ArrayList<>();
+        List<List<QuestionWithEmbodiments>> questionLists = new ArrayList<>();
         for (List<Integer> indexes : indexLists) {
-            List<QuestionWithEmbodiments> answerList = new ArrayList<>();
+            List<QuestionWithEmbodiments> questionList = new ArrayList<>();
             for (Integer i : indexes) {
-                answerList.add(inputQuestion.get(i - 1));
+                if (questionLimit != 0 && questionList.size() == questionLimit) {
+                    break;
+                }
+                questionList.add(inputQuestion.get(i - 1));
             }
-            answersList.add(answerList);
+            questionLists.add(questionList);
         }
-        return answersList;
+        return questionLists;
     }
 
     private List<List<String>> generateAnswerList(List<String> inputAnswer) {
