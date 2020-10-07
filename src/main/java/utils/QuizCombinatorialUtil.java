@@ -4,10 +4,7 @@ import lombok.experimental.UtilityClass;
 import model.QuestionWithEmbodiments;
 import model.Quiz;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @UtilityClass
@@ -23,16 +20,16 @@ public class QuizCombinatorialUtil {
     private static List<Quiz> questionCombine(List<Quiz> inputQuizList, int variantLimit, int questionLimit) {
         final List<Quiz> combinedQuizList = new ArrayList<>();
         for (Quiz quiz : inputQuizList) {
-            List<List<QuestionWithEmbodiments>> questionsLists = generateQuestionList(quiz.getQuestions(), questionLimit);
-            for (List<QuestionWithEmbodiments> questions : questionsLists) {
-                Quiz newQuiz = new Quiz();
-                newQuiz.setQuestions(questions);
-                if (variantLimit != 0 && combinedQuizList.size() == variantLimit) {
-                    return combinedQuizList;
+            Collections.shuffle(quiz.getQuestions());
+            Quiz newQuiz = new Quiz();
+            for (QuestionWithEmbodiments question : quiz.getQuestions()) {
+                if (questionLimit != 0 && newQuiz.getQuestions().size() == questionLimit) {
+                    break;
                 } else {
-                    combinedQuizList.add(newQuiz);
+                    newQuiz.addNewQuestion(question);
                 }
             }
+            combinedQuizList.add(newQuiz);
         }
         return combinedQuizList;
     }
@@ -79,19 +76,8 @@ public class QuizCombinatorialUtil {
 
     private List<List<QuestionWithEmbodiments>> generateQuestionList(List<QuestionWithEmbodiments> inputQuestion,
                                                                      int questionLimit) {
-        List<List<Integer>> indexLists = getIndexCombinations(inputQuestion.size());
-        List<List<QuestionWithEmbodiments>> questionLists = new ArrayList<>();
-        for (List<Integer> indexes : indexLists) {
-            List<QuestionWithEmbodiments> questionList = new ArrayList<>();
-            for (Integer i : indexes) {
-                if (questionLimit != 0 && questionList.size() == questionLimit) {
-                    break;
-                }
-                questionList.add(inputQuestion.get(i - 1));
-            }
-            questionLists.add(questionList);
-        }
-        return questionLists;
+        //todo добавить реализацию
+        return null;
     }
 
     private List<List<String>> generateAnswerList(List<String> inputAnswer) {
@@ -110,17 +96,23 @@ public class QuizCombinatorialUtil {
     private List<List<Integer>> getIndexCombinations(int size) {
         List<List<Integer>> indexLists = new ArrayList<>();
         int[][] indexArrays = new int[calculateFactorial(size)][size];
+        int indexToInsert = 0;
         for (int[] array : indexArrays) {
-            array = getNextUniceArray(indexArrays);
+            array = getNextUniceArray(indexArrays, indexToInsert++);
             indexLists.add(Arrays.stream(array).boxed().collect(Collectors.toList()));
         }
         return indexLists;
     }
 
 
-    private int[] getNextUniceArray(int[][] arrays) {
+    private int[] getNextUniceArray(int[][] arrays, int indexToInsert) {
         int[] array = getArray(arrays[0].length);
-        return isArrayContainsInArray(array, arrays) ? getNextUniceArray(arrays) : array;
+        if (isArrayContainsInArray(array, arrays)) {
+            return getNextUniceArray(arrays, indexToInsert);
+        } else {
+            arrays[indexToInsert] = array;
+            return array;
+        }
     }
 
     private int[] getArray(int size) {
