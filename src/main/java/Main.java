@@ -2,6 +2,7 @@ import model.QuestionWithEmbodiments;
 import model.Quiz;
 import reader.ReaderFromCsv;
 import utils.QuizCombinatorialUtil;
+import writer.WriterToDoc;
 import writer.WriterToTxt;
 
 import java.util.ArrayList;
@@ -14,11 +15,10 @@ import java.util.List;
 //      Не забыть про то, что ответы тогда тоже должны быть в буквенном выражении
 // -научиться записывать сгенерированные тесты в файл и читать из него
 // -научиться шифровать этот файл
-// -экспорт в .txt
+// -добавить qrCode в docx при экспорте
 // -учитывать ограничение на количество вариантов
 // -Добавить возможность генерировать больше вариантов, чем факториал количества вопросов
 // -добавить автоматическое формирование имен экспортироемых файлов
-// -экспорт в word https://www.baeldung.com/java-microsoft-word-with-apache-poi
 // -графический интерфейс
 // -предусмотреть возможность добавления другого типа вопроса в тест, например, с развернутым ответом
 // -добавить отлов exception-ов
@@ -28,7 +28,7 @@ public class Main {
 
     public static void main(String[] args) {
         Quiz originalQuiz = getOriginalQuizFromResourceFile();
-        List<Quiz> generatedQuizList = QuizCombinatorialUtil.generate(originalQuiz, 50, 3);
+        List<Quiz> generatedQuizList = QuizCombinatorialUtil.generate(originalQuiz, 50, 5);
         writeQuizTextToFiles(generatedQuizList);
     }
 
@@ -36,6 +36,10 @@ public class Main {
         WriterToTxt writer = new WriterToTxt();
         writer.writeQuizText(generatedQuizList, "1.txt");
         writer.writeQuizAnswersToText(generatedQuizList, "1_answers.txt");
+
+        WriterToDoc writerToDoc = new WriterToDoc();
+        writerToDoc.writeQuizText(generatedQuizList, "quiz.docx");
+        writerToDoc.writeQuizAnswersToText(generatedQuizList, "quiz_answers.docx");
     }
 
     private static Quiz getOriginalQuizFromResourceFile() {

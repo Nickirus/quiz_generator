@@ -14,12 +14,8 @@ public class WriterToTxt {
             FileWriter myWriter = new FileWriter(fileName);
             int variant = 1;
             for (Quiz quiz : quizList) {
-                myWriter.write("----------------------------------------------------" + "\n");
-                myWriter.write("Вариант " + variant++ + "\n");
-                String uuid = quiz.getUuid();
+                variant = fillVariantHeader(myWriter, variant, quiz.getUuid());
                 List<QuestionWithEmbodiments> questions = quiz.getQuestions();
-                myWriter.write(uuid + "\n");
-                myWriter.write("\n");
                 int questionNum = 1;
                 for (QuestionWithEmbodiments question : questions) {
                     myWriter.write("Вопрос №" + questionNum++ + "\n");
@@ -35,7 +31,7 @@ public class WriterToTxt {
                 myWriter.write("\n");
             }
             myWriter.close();
-            System.out.println("Successfully wrote to the file.");
+            System.out.println("Successfully wrote to the " + fileName);
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
@@ -47,12 +43,8 @@ public class WriterToTxt {
             FileWriter myWriter = new FileWriter(fileName);
             int variant = 1;
             for (Quiz quiz : quizList) {
-                myWriter.write("----------------------------------------------------" + "\n");
-                myWriter.write("Вариант " + variant++ + "\n");
-                String uuid = quiz.getUuid();
+                variant = fillVariantHeader(myWriter, variant, quiz.getUuid());
                 List<QuestionWithEmbodiments> questions = quiz.getQuestions();
-                myWriter.write(uuid + "\n");
-                myWriter.write("\n");
                 int questionNum = 1;
                 for (QuestionWithEmbodiments question : questions) {
                     myWriter.write("Вопрос №" + questionNum++ + " - " + question.getNumberOfTrueAnswer());
@@ -61,10 +53,18 @@ public class WriterToTxt {
                 myWriter.write("\n");
             }
             myWriter.close();
-            System.out.println("Successfully wrote to the file.");
+            System.out.println("Successfully wrote to the " + fileName);
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
+    }
+
+    private int fillVariantHeader(FileWriter myWriter, int variant, String uuid) throws IOException {
+        myWriter.write("----------------------------------------------------" + "\n");
+        myWriter.write("Вариант " + variant++ + "\n");
+        myWriter.write(uuid + "\n");
+        myWriter.write("\n");
+        return variant;
     }
 }
