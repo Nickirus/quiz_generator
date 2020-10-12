@@ -1,7 +1,6 @@
-package reader;
+package utils.io.reader;
 
 import au.com.bytecode.opencsv.CSVReader;
-import lombok.Value;
 
 import java.io.BufferedReader;
 import java.io.IOException;

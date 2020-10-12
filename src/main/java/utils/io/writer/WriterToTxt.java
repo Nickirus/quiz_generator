@@ -1,4 +1,4 @@
-package writer;
+package utils.io.writer;
 
 import model.QuestionWithEmbodiments;
 import model.Quiz;
@@ -7,8 +7,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-public class WriterToTxt {
+public class WriterToTxt implements QuizWriter{
 
+    @Override
     public void writeQuizText(List<Quiz> quizList, String fileName) {
         try {
             FileWriter myWriter = new FileWriter(fileName);
@@ -38,7 +39,8 @@ public class WriterToTxt {
         }
     }
 
-    public void writeQuizAnswersToText(List<Quiz> quizList, String fileName) {
+    @Override
+    public void writeQuizAnswers(List<Quiz> quizList, String fileName) {
         try {
             FileWriter myWriter = new FileWriter(fileName);
             int variant = 1;

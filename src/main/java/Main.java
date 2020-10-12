@@ -1,10 +1,14 @@
 import model.QuestionWithEmbodiments;
 import model.Quiz;
-import reader.ReaderFromCsv;
+import utils.io.reader.QuizDeserializer;
+import utils.io.reader.ReaderFromCsv;
 import utils.QuizCombinatorialUtil;
-import writer.WriterToDoc;
-import writer.WriterToTxt;
+import utils.io.writer.QuizSerializer;
+import utils.io.writer.QuizWriter;
+import utils.io.writer.WriterToDoc;
+import utils.io.writer.WriterToTxt;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,8 +17,7 @@ import java.util.List;
 // -предусмотреть случай, когда количество ответов в вопросах разное
 // -при экспорте нужна возможность буквенной нумерации ответов.
 //      Не забыть про то, что ответы тогда тоже должны быть в буквенном выражении
-// -научиться записывать сгенерированные тесты в файл и читать из него
-// -научиться шифровать этот файл
+// -научиться шифровать сгенерированные тесты в сохраненном файлe
 // -добавить qrCode в docx при экспорте
 // -учитывать ограничение на количество вариантов
 // -Добавить возможность генерировать больше вариантов, чем факториал количества вопросов
@@ -29,17 +32,21 @@ public class Main {
     public static void main(String[] args) {
         Quiz originalQuiz = getOriginalQuizFromResourceFile();
         List<Quiz> generatedQuizList = QuizCombinatorialUtil.generate(originalQuiz, 50, 5);
-        writeQuizTextToFiles(generatedQuizList);
+
+        QuizSerializer.serialize(generatedQuizList, "Quiz.quiz");
+        List<Quiz> generatedQuizList2 = QuizDeserializer.deserialize("Quiz.quiz");
+
+        writeQuizTextToFiles(generatedQuizList2);
     }
 
     private static void writeQuizTextToFiles(List<Quiz> generatedQuizList) {
-        WriterToTxt writer = new WriterToTxt();
+        QuizWriter writer = new WriterToTxt();
         writer.writeQuizText(generatedQuizList, "1.txt");
-        writer.writeQuizAnswersToText(generatedQuizList, "1_answers.txt");
+        writer.writeQuizAnswers(generatedQuizList, "1_answers.txt");
 
-        WriterToDoc writerToDoc = new WriterToDoc();
+        QuizWriter writerToDoc = new WriterToDoc();
         writerToDoc.writeQuizText(generatedQuizList, "quiz.docx");
-        writerToDoc.writeQuizAnswersToText(generatedQuizList, "quiz_answers.docx");
+        writerToDoc.writeQuizAnswers(generatedQuizList, "quiz_answers.docx");
     }
 
     private static Quiz getOriginalQuizFromResourceFile() {

@@ -1,4 +1,4 @@
-package writer;
+package utils.io.writer;
 
 import model.QuestionWithEmbodiments;
 import model.Quiz;
@@ -9,8 +9,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-public class WriterToDoc {
+public class WriterToDoc implements QuizWriter{
 
+    @Override
     public void writeQuizText(List<Quiz> quizList, String fileName) {
         XWPFDocument document = new XWPFDocument();
         int variant = 1;
@@ -44,7 +45,8 @@ public class WriterToDoc {
         write(fileName, document);
     }
 
-    public void writeQuizAnswersToText(List<Quiz> quizList, String fileName) {
+    @Override
+    public void writeQuizAnswers(List<Quiz> quizList, String fileName) {
         XWPFDocument document = new XWPFDocument();
         int variant = 1;
         for (Quiz quiz : quizList) {
